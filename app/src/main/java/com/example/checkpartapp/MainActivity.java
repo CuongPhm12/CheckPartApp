@@ -1,7 +1,10 @@
 package com.example.checkpartapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +26,7 @@ import com.example.checkpartapp.model.PartItem_Adapter_Recycler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private List<PartItem> partItemList = new ArrayList<>();
     Button btnReset, btnCheck, btnExit;
     EditText edtOldBarcode, edtNewBarcode;
-    TextView txtOldPartID, txtNewPartID;
+    TextView txtOldPartID, txtNewPartID,txtResult;
     ApiService apiService;
+    TextToSpeech t1;
+    private boolean isTtsReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +61,29 @@ public class MainActivity extends AppCompatActivity {
         edtOldBarcode = findViewById(R.id.edtOldBarcode);
         txtOldPartID = findViewById(R.id.txtOldPartID);
         txtNewPartID = findViewById(R.id.txtNewPartID);
+        txtResult = findViewById(R.id.txtResult);
 
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+
+                    int result = t1.setLanguage(Locale.US);
+                    t1.setSpeechRate(1.0f);
+                    // Check if the language is supported
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "Language not supported");
+                    } else {
+                        isTtsReady = true;
+                        Log.d("TTS", "TextToSpeech is ready");
+//                        Toast.makeText(MainActivity.this, "TextToSpeech is ready", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed: " + status);
+//                    Toast.makeText(MainActivity.this, "Initialization failed: " + status, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         // Set focus on edtOldBarcode
         edtOldBarcode.requestFocus();
 
@@ -129,29 +157,39 @@ public class MainActivity extends AppCompatActivity {
                 if (!oldPartID.isEmpty() && oldPartID.equals(newPartID)) {
 //    Toast.makeText(MainActivity.this, "OK" , Toast.LENGTH_SHORT).show();
 
-                    String result = "OK";
-                    Bundle myBundle = new Bundle();
-                    myBundle.putString("rs", result);
-
-                    myIntent.putExtra("myPackage", myBundle);
-                    startActivity(myIntent);
+//                    String result = "OK";
+//                    Bundle myBundle = new Bundle();
+//                    myBundle.putString("rs", result);
+//
+//                    myIntent.putExtra("myPackage", myBundle);
+//                    startActivity(myIntent);
+                    txtResult.setText("OK");
+                    txtResult.setTextColor(Color.parseColor("#6495ED"));
+                    txtResult.setBackgroundColor(Color.parseColor("#DAF7A6"));
                 } else if (oldPartID.isEmpty() && newPartID.isEmpty()) {
 //    Toast.makeText(MainActivity.this, "NG" , Toast.LENGTH_SHORT).show();
-                    String result = "NG";
-                    Bundle myBundle = new Bundle();
-                    myBundle.putString("rs", result);
-
-                    myIntent.putExtra("myPackage", myBundle);
-                    startActivity(myIntent);
+//                    String result = "NG";
+//                    Bundle myBundle = new Bundle();
+//                    myBundle.putString("rs", result);
+//
+//                    myIntent.putExtra("myPackage", myBundle);
+//                    startActivity(myIntent);
+                    txtResult.setText("NG");
+                    txtResult.setTextColor(Color.WHITE);
+                    txtResult.setBackgroundColor(Color.parseColor("#cd6155"));
                 } else {
 //    Toast.makeText(MainActivity.this, "NG" , Toast.LENGTH_SHORT).show();
-                    String result = "NG";
-                    Bundle myBundle = new Bundle();
-                    myBundle.putString("rs", result);
-
-                    myIntent.putExtra("myPackage", myBundle);
-                    startActivity(myIntent);
+//                    String result = "NG";
+//                    Bundle myBundle = new Bundle();
+//                    myBundle.putString("rs", result);
+//
+//                    myIntent.putExtra("myPackage", myBundle);
+//                    startActivity(myIntent);
+                    txtResult.setText("NG");
+                    txtResult.setTextColor(Color.WHITE);
+                    txtResult.setBackgroundColor(Color.parseColor("#cd6155"));
                 }
+                speakResult();
 
             }
         });
@@ -162,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
                 edtOldBarcode.setText("");
                 txtOldPartID.setText("");
                 txtNewPartID.setText("");
+                txtResult.setText("");
+                txtResult.setBackgroundColor(Color.WHITE);
 
                 partItemList.clear();
 
@@ -177,5 +217,39 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void speakResult() {
+        String text = txtResult.getText().toString();
+        if (isTtsReady) {
+            if (!text.isEmpty()) {
+                // Check if the text is "NG" and modify it
+                if (text.equalsIgnoreCase("NG")) {
+                    text = "N G";  // Separate the letters with a space
+
+                } else if (text.equalsIgnoreCase("OK")) {
+                    text = "O K";  // Separate the letters with a space
+
+                }
+                t1.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+            } else {
+                Log.e("TTS", "Text is empty, cannot speak");
+//                Toast.makeText(MainActivity.this, "Text is empty, cannot speak", Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+//            Log.e("TTS", "TextToSpeech not ready or text is empty");
+            Toast.makeText(MainActivity.this, "TextToSpeech not ready or text is empty", Toast.LENGTH_LONG).show();
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        // Shutdown TextToSpeech to release resources
+        if (t1 != null && isTtsReady) {
+//        if (t1 != null ) {
+            t1.stop();
+            t1.shutdown();
+        }
+        super.onDestroy();
     }
 }
