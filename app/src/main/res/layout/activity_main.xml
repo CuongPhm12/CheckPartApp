@@ -12,15 +12,19 @@
     <!-- Header Text -->
     <TextView
         android:id="@+id/tvHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Check Part"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:background="#FFD154"
         android:gravity="center"
-        android:layout_gravity="center_horizontal" />
+        android:text="Check Part"
+        android:textColor="#003795"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <!-- Part ID Section -->
+
+    <!-- Static Table Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +45,6 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <!-- Static Table Header -->
     <TableLayout
         android:id="@+id/tableLayoutHeader"
         android:layout_width="match_parent"
@@ -101,8 +104,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewData"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+        android:layout_height="161dp"
+        android:layout_marginTop="10dp"
+        android:scrollbars="horizontal|vertical" />
 
     <!-- Part mới Label -->
     <LinearLayout
@@ -188,6 +192,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -196,8 +201,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:backgroundTint="#68D69D"
             android:text="RESET"
-            android:textSize="10sp" />
+            android:textColor="#401D83"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnCheck"
@@ -205,8 +213,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
+            android:backgroundTint="#FFC0B9"
             android:text="CHECK"
-            android:textSize="10sp" />
+            android:textColor="#FFFFC5"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnExit"
@@ -214,8 +225,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
+            android:backgroundTint="#C20000"
             android:text="EXIT"
-            android:textSize="10sp" />
+            android:textColor="#D9D9D9"
+            android:textSize="10sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
 
