@@ -3,28 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-   >
-    <TextView
-        android:id="@+id/txtSiteID"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:padding="8dp"
-        android:textSize="18sp" />
-    <TextView
-        android:id="@+id/txtUpnID"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:padding="8dp"
-        android:textSize="18sp" />
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="#CCCCCC">
 
     <TextView
-        android:id="@+id/txtPartID"
+        android:id="@+id/txtHeaderSiteId"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+
+        android:text="SITE_ID"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtHeaderUpnId"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="UPN_ID"
+        android:textStyle="bold"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/txtHeaderPartId"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:padding="8dp"
-        android:textSize="18sp" />
+        android:text="PART_ID"
+        android:textStyle="bold"
+        android:gravity="center"/>
+
 
 </LinearLayout>

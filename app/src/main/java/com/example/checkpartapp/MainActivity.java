@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerViewData);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 //        listViewData = findViewById(R.id.listViewData);
 
         btnCheck = findViewById(R.id.btnCheck);
@@ -89,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
 //        adapter = new PartItemAdapter(this, partItemList);
 //        listViewData.setAdapter(adapter);
-        adapter = new PartItem_Adapter_Recycler(partItemList);
-        recyclerView.setAdapter(adapter);
+//        adapter = new PartItem_Adapter_Recycler(partItemList);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));// Vertical scrolling
+//        recyclerView.setAdapter(adapter);
         edtOldBarcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -105,7 +107,16 @@ public class MainActivity extends AppCompatActivity {
                                 if (response.body().getResult() != null && !response.body().getResult().isEmpty()) {
                                     partItemList.clear();
                                     partItemList.addAll(response.body().getResult());
-                                    adapter.notifyDataSetChanged();
+                                    Log.d("MainActivity", "partItemList size: " + partItemList.size());
+                                    // Check if adapter is null, then create new adapter instance and assign it to RecyclerView
+                                    if (adapter == null) {
+                                        adapter = new PartItem_Adapter_Recycler(partItemList);
+                                        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                                        recyclerView.setAdapter(adapter);
+
+                                    } else {
+                                        adapter.updateData(partItemList); // If adapter exists, update data only
+                                    }
                                     txtOldPartID.setText(partItemList.get(0).getPART_ID());
 //                                    Toast.makeText(MainActivity.this, "Call API Successfully", Toast.LENGTH_SHORT).show();
                                 } else {
