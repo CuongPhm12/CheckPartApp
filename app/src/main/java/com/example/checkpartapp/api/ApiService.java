@@ -1,6 +1,7 @@
 package com.example.checkpartapp.api;
 
 import com.example.checkpartapp.model.ApiResponse;
+import com.example.checkpartapp.model.GetPartByUpn_Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,4 +27,9 @@ public interface ApiService {
 
     Call<ApiResponse> getPartItemList(@Query("floor") int floor,
                                       @Query("upn_id") String upn_id);
+
+//    http://172.28.10.17:5003/Umes/GetPartByUpn?upn_id=NE7X2KN
+    @GET("Umes/GetPartByUpn")
+    Call<GetPartByUpn_Response> getPartByUpn(@Query("upn_id") String upn_id);
+
 }

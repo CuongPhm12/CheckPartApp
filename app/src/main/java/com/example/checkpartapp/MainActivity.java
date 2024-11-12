@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.checkpartapp.api.ApiService;
 import com.example.checkpartapp.model.ApiResponse;
+import com.example.checkpartapp.model.GetPartByUpn_Response;
 import com.example.checkpartapp.model.PartItem;
 import com.example.checkpartapp.model.PartItemAdapter;
 import com.example.checkpartapp.model.PartItem_Adapter_Recycler;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private List<PartItem> partItemList = new ArrayList<>();
     Button btnReset, btnCheck, btnExit;
     EditText edtOldBarcode, edtNewBarcode;
-    TextView txtOldPartID, txtNewPartID,txtResult;
+    TextView txtOldPartID, txtNewPartID, txtResult;
     ApiService apiService;
     TextToSpeech t1;
     private boolean isTtsReady = false;
@@ -50,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        TextView tvHeader = findViewById(R.id.tvHeader);
+        tvHeader.setText("Check Part " + "1.11");
+
         recyclerView = findViewById(R.id.recyclerViewData);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -117,7 +122,31 @@ public class MainActivity extends AppCompatActivity {
                                     } else {
                                         adapter.updateData(partItemList); // If adapter exists, update data only
                                     }
-                                    txtOldPartID.setText(partItemList.get(0).getPART_ID());
+                                    ApiService.apiService.getPartByUpn(upnId).enqueue(new Callback<GetPartByUpn_Response>() {
+                                        @Override
+                                        public void onResponse(Call<GetPartByUpn_Response> call, Response<GetPartByUpn_Response> response) {
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                if (response.body().getOldPart() != null && !response.body().getOldPart().isEmpty()) {
+                                                    String oldPartId = response.body().getOldPart();
+                                                    txtOldPartID.setText(oldPartId);
+                                                } else {
+                                                    txtOldPartID.setText("");
+                                                    Toast.makeText(MainActivity.this, "No old part ID found", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "Response find Old Part ID error", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<GetPartByUpn_Response> call, Throwable t) {
+                                            Toast.makeText(MainActivity.this, "Call API find Old Part ID Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    edtOldBarcode.setEnabled(false);
+
+//                                    txtOldPartID.setText(partItemList.get(0).getPART_ID());
 //                                    Toast.makeText(MainActivity.this, "Call API Successfully", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(MainActivity.this, "No parts found", Toast.LENGTH_SHORT).show();
@@ -213,10 +242,12 @@ public class MainActivity extends AppCompatActivity {
                 txtNewPartID.setText("");
                 txtResult.setText("");
                 txtResult.setBackgroundColor(Color.WHITE);
-
+                edtOldBarcode.setEnabled(true);
                 partItemList.clear();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
 
-                adapter.notifyDataSetChanged();
                 // Set focus on edtOldBarcode
                 edtOldBarcode.requestFocus();
             }
@@ -253,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "TextToSpeech not ready or text is empty", Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     protected void onDestroy() {
         // Shutdown TextToSpeech to release resources
