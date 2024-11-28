@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     ApiService apiService;
     TextToSpeech t1;
     private boolean isTtsReady = false;
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView tvHeader = findViewById(R.id.tvHeader);
-        tvHeader.setText("Check Part " + "1.11");
+        tvHeader.setText("Check Part " + "1.12");
 
         recyclerView = findViewById(R.id.recyclerViewData);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (keyEvent != null && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     String upnIdNew = edtNewBarcode.getText().toString();
-                    boolean flag = false;
+                    flag = false;
                     for (int j = 0; j < partItemList.size(); j++) {
                         if (partItemList.get(j).getUPN_ID().equals(upnIdNew)) {
                             txtNewPartID.setText(partItemList.get(j).getPART_ID());
@@ -194,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 String oldPartID = txtOldPartID.getText().toString();
                 String newPartID = txtNewPartID.getText().toString();
                 Intent myIntent = new Intent(MainActivity.this, MessageActivity.class);
-                if (!oldPartID.isEmpty() && oldPartID.equals(newPartID)) {
+                if ((!oldPartID.isEmpty() && oldPartID.equals(newPartID))||flag) {
 //    Toast.makeText(MainActivity.this, "OK" , Toast.LENGTH_SHORT).show();
 
 //                    String result = "OK";
@@ -206,7 +207,8 @@ public class MainActivity extends AppCompatActivity {
                     txtResult.setText("OK");
                     txtResult.setTextColor(Color.parseColor("#6495ED"));
                     txtResult.setBackgroundColor(Color.parseColor("#DAF7A6"));
-                } else if (oldPartID.isEmpty() && newPartID.isEmpty()) {
+                }
+                else if (oldPartID.isEmpty() && newPartID.isEmpty()) {
 //    Toast.makeText(MainActivity.this, "NG" , Toast.LENGTH_SHORT).show();
 //                    String result = "NG";
 //                    Bundle myBundle = new Bundle();
