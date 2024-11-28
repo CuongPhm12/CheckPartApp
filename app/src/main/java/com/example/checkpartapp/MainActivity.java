@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView tvHeader = findViewById(R.id.tvHeader);
-        tvHeader.setText("Check Part " + "1.12");
+        tvHeader.setText("Check Part " + "1.13");
 
         recyclerView = findViewById(R.id.recyclerViewData);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
